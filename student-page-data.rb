@@ -1,14 +1,14 @@
-require 'nokogiri'  # => true
-require 'open-uri'  # => true
-require 'pry'       # => true
+require 'nokogiri'
+require 'open-uri'
+require 'pry'
 require_relative 'index_scrape.rb'
 
 class Student
-  attr_reader :name, :twitter, :linkedin, :github, :fourth_one
+  attr_reader :name, :twitter, :linkedin, :github, :fourth_one, :bio, :education, :work, :tag_line
 
   def initialize(url)
     @url = url
-    @html = open(@url).read  # ~> OpenURI::HTTPError: 404 Not Found
+    @html = open(@url).read
     @student_data = Nokogiri::HTML(@html)
     @name = @student_data.search("h4.ib_main_header").text
     @twitter = @student_data.search("div.social-icons a").map {|link| link['href']}[0]
@@ -20,59 +20,44 @@ class Student
     @work = @student_data.search("div.services p")[1].text.strip
     @tag_line = @student_data.search("div.textwidget h3").text
   end
+end
 
+def clean_url_array
+  clean_url_array = []
+  index_scrape.each do |url|
+    begin 
+      open(url)
+    rescue
+     
+    else
+      clean_url_array << url
+    end
+  end
+  clean_url_array
 
 end
 
-
-    def create_students(array)
-      array.each do |url|
-         name = generate_name(url)  
-         name = Student.new(url)
-         binding.pry
-      end
-    end
-
-
-
-
-    def clean_array
-      cleaned_array = []
-      index_scrape.each do |url|
-        begin 
-          open(url)
-        rescue
-         
-        else
-          cleaned_array << url
-        end
-      end
-      cleaned_array
-
-    end
-
-
-
-
-
+ def create_students
     
-
-
-    def generate_names 
-      name_array = []
-      index_scrape.each do |url|
-        html = open(url).read
-        index_data = Nokogiri::HTML(html)
-        name = index_data.search("h4.ib_main_header").text.downcase.gsub(" ","_")
-        name_array << name 
-      end
-      name_array
-
+    student_array = clean_url_array.map do |url|
+      student_array = Student.new(url)
     end
+end
 
-# puts generate_names(['http://web0715.students.flatironschool.com/students/nancy_hawa.html', 'http://web0715.students.flatironschool.com/students/adam_moelis.html'])
 
-clean_array
+
+# def generate_names 
+#   name_array = []
+#   clean_array.each do |url|
+#     html = open(url).read
+#     index_data = Nokogiri::HTML(html)
+#     name = index_data.search("h4.ib_main_header").text.downcase.gsub(" ","_")
+#     name_array << name 
+#   end
+#   name_array
+# end
+
+
 
 
 
@@ -95,22 +80,5 @@ clean_array
 # data_hash[:tag_line] = student_data.search("div.textwidget h3").text
 
 
-# adam = Student.new("http://web0715.students.flatironschool.com/students/adam_moelis.html")
-# puts adam.twitter
-# puts adam.linkedin
-# puts adam.github
-# puts adam.fourth_one
 
 
-# ~> OpenURI::HTTPError
-# ~> 404 Not Found
-# ~>
-# ~> /Users/AdamMoelis/.rvm/rubies/ruby-2.2.1/lib/ruby/2.2.0/open-uri.rb:358:in `open_http'
-# ~> /Users/AdamMoelis/.rvm/rubies/ruby-2.2.1/lib/ruby/2.2.0/open-uri.rb:736:in `buffer_open'
-# ~> /Users/AdamMoelis/.rvm/rubies/ruby-2.2.1/lib/ruby/2.2.0/open-uri.rb:211:in `block in open_loop'
-# ~> /Users/AdamMoelis/.rvm/rubies/ruby-2.2.1/lib/ruby/2.2.0/open-uri.rb:209:in `catch'
-# ~> /Users/AdamMoelis/.rvm/rubies/ruby-2.2.1/lib/ruby/2.2.0/open-uri.rb:209:in `open_loop'
-# ~> /Users/AdamMoelis/.rvm/rubies/ruby-2.2.1/lib/ruby/2.2.0/open-uri.rb:150:in `open_uri'
-# ~> /Users/AdamMoelis/.rvm/rubies/ruby-2.2.1/lib/ruby/2.2.0/open-uri.rb:716:in `open'
-# ~> /Users/AdamMoelis/.rvm/rubies/ruby-2.2.1/lib/ruby/2.2.0/open-uri.rb:34:in `open'
-# ~> /Users/AdamMoelis/Documents/Flatiron/week-2/day4/scraping-the-students-page-web-0715/student-page-data.rb:5:in `<main>'
