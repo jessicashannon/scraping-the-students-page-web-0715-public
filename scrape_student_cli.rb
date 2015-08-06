@@ -55,16 +55,15 @@ class Program
 
   def respond_to_menu
     if @currentmenu == "main"
-
-          if valid_input
-            @student = valid_input
-            student_menu
-          else
-            puts "I did not understand your input."
-            puts "Please pick a student."
-            get_user_input
-            respond_to_menu
-          end
+      if valid_input
+        @student = valid_input
+        student_menu
+      else
+        puts "I did not understand your input."
+        puts "Please pick a student."
+        get_user_input
+        respond_to_menu
+      end
     elsif @currentmenu == "student" 
         student_menu_selection
       puts "Type 'more' to continue seeing info about #{@student.name},"
@@ -73,11 +72,11 @@ class Program
     end
   end
 
-def valid_input
-   valid_input = @students.find.with_index(1) do |student_object, index|
-    @input == student_object.name.downcase || @input == index.to_s 
+  def valid_input
+     valid_input = @students.find.with_index(1) do |student_object, index|
+      @input == student_object.name.downcase || @input == index.to_s 
+    end
   end
-end
 
   def student_menu_choice
       get_user_input
@@ -128,10 +127,3 @@ end
   end
 
 end
-
-# array_of_student_object = []
-
-# array.find { |student| student.name == parameter || array.index(student) == param} 
-
-
-# Program
