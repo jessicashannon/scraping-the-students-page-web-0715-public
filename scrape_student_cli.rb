@@ -41,6 +41,7 @@ class Program
     @students.each.with_index(1) do |student, index|
       puts "#{index}. #{student.name}"
     end
+    puts "======================"
     puts "Please pick a student."
     get_user_input
     respond_to_menu
@@ -93,6 +94,7 @@ class Program
   end
 
   def student_menu_selection
+  puts "======================"
     case @input
       when "Bio", "1"
         puts @student.bio
@@ -109,6 +111,8 @@ class Program
       when "LinkedIn", "7"
         puts @student.linkedin
     end
+    puts "======================"
+
     puts "Type 'more' to continue seeing info about #{@student.name},"
     puts "or type 'main' to return to the main menu."
     student_menu_choice
@@ -121,6 +125,7 @@ class Program
     ["Bio", "Tagline", "Education", "Work",  "Twitter", "Github", "LinkedIn"].each.with_index(1) do |option, index|
         puts "#{index}. #{option}"
     end
+    puts "======================"
     puts "Please pick an option."
     get_user_input
     respond_to_menu
