@@ -2,39 +2,43 @@ require 'nokogiri'  # => true
 require 'open-uri'  # => true
 require 'pry'       # => true
 
+class Student
+  attr_reader :name
+
+  def initialize(url)
+    @url = url
+    @html = open(@url).read  # ~> OpenURI::HTTPError: 404 Not Found
+    @student_data = Nokogiri::HTML(@html)
+    @name = @student_data.search("h4.ib_main_header").text
+
+  end
+
+
+end
+
+
+
 html = open("http://web0715.students.flatironschool.com/students/adam_moelis.html").read  # ~> OpenURI::HTTPError: 404 Not Found
 student_data = Nokogiri::HTML(html)
-student_data_hash = {:URL => nil,
-                      :student_name => nil,
-                      :twitter => nil,
-                      :linkedin => nil,
-                      :github => nil,
-                      :education => nil,
-                      :work => nil,
-                      :tag_line => nil,
-                      :bio => nil
-}
+data_hash = {}
 
+data_hash[:social_media_array] = student_data.search("div.social-icons a").map {|link| link['href']} # twitter, linkedin, github, and the fourth one
 
-student_social_media_array = student_data.search("div.social-icons a").map {|link| link['href']} # twitter, linkedin, github, and the fourth one
+data_hash[:name] = student_data.search("h4.ib_main_header").text
 
-student_name = student_data.search("h4.ib_main_header").text
+data_hash[:bio] = student_data.search("div.services p").first.text.strip
 
-student_bio = student_data.search("div.services p").first.text.strip
-
-student_education = student_data.search("div.services ul li").text
+data_hash[:education] = student_data.search("div.services ul li").text
 
 #student_work_adam = student_data.search("div.services h4").text
 
-student_work = student_data.search("div.services p")[1].text.strip # COME BACK TO TRY AND SELECT MORE THAN JUST ONE WORK EXPERIENCE
+data_hash[:work] = student_data.search("div.services p")[1].text.strip # COME BACK TO TRY AND SELECT MORE THAN JUST ONE WORK EXPERIENCE
 
-student_tag_line = student_data.search("div.textwidget h3").text
+data_hash[:tag_line] = student_data.search("div.textwidget h3").text
 
 
-student_data_hash.each do |key, value|
-  student_data_hash[key] 
-
-end
+adam = Student.new("http://web0715.students.flatironschool.com/students/adam_moelis.html")
+puts adam.name
 
 
 # ~> OpenURI::HTTPError
