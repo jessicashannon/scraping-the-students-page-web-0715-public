@@ -37,12 +37,9 @@ def clean_url_array
 end
 
  def create_students
-    student_array = clean_url_array.map do |url|
+    clean_url_array.map do |url|
       student_array = Student.new(url)
     end
 end
-
-
-
 
 
