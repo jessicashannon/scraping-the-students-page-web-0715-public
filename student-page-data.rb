@@ -1,6 +1,7 @@
 require 'nokogiri'  # => true
 require 'open-uri'  # => true
 require 'pry'       # => true
+require_relative 'index_scrape.rb'
 
 class Student
   attr_reader :name, :twitter, :linkedin, :github, :fourth_one
@@ -18,18 +19,64 @@ class Student
     @education = @student_data.search("div.services ul li").text
     @work = @student_data.search("div.services p")[1].text.strip
     @tag_line = @student_data.search("div.textwidget h3").text
-
   end
 
 
 end
 
-def create_students(array)
-  array.each do |url|
-    name = Student.new(url)
-  end
 
-end
+    def create_students(array)
+      array.each do |url|
+         name = generate_name(url)  
+         name = Student.new(url)
+         binding.pry
+      end
+    end
+
+
+
+
+    def clean_array
+      cleaned_array = []
+      index_scrape.each do |url|
+        begin 
+          open(url)
+        rescue
+         
+        else
+          cleaned_array << url
+        end
+      end
+      cleaned_array
+
+    end
+
+
+
+
+
+    
+
+
+    def generate_names 
+      name_array = []
+      index_scrape.each do |url|
+        html = open(url).read
+        index_data = Nokogiri::HTML(html)
+        name = index_data.search("h4.ib_main_header").text.downcase.gsub(" ","_")
+        name_array << name 
+      end
+      name_array
+
+    end
+
+# puts generate_names(['http://web0715.students.flatironschool.com/students/nancy_hawa.html', 'http://web0715.students.flatironschool.com/students/adam_moelis.html'])
+
+clean_array
+
+
+
+
 
 
 
@@ -48,11 +95,11 @@ end
 # data_hash[:tag_line] = student_data.search("div.textwidget h3").text
 
 
-adam = Student.new("http://web0715.students.flatironschool.com/students/adam_moelis.html")
-puts adam.twitter
-puts adam.linkedin
-puts adam.github
-puts adam.fourth_one
+# adam = Student.new("http://web0715.students.flatironschool.com/students/adam_moelis.html")
+# puts adam.twitter
+# puts adam.linkedin
+# puts adam.github
+# puts adam.fourth_one
 
 
 # ~> OpenURI::HTTPError
